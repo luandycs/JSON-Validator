@@ -1,0 +1,176 @@
+"""
+Name: Andy Lu
+Comments:
+
+Sources:
+        https://www.programiz.com/python-programming/user-defined-exception
+        https://www.w3schools.com/python/python_json.asp
+        https://www.w3schools.com/python/ref_func_isinstance.asp
+        https://stackoverflow.com/questions/2052390/manually-raising-throwing-an-exception-in-python
+        http://cs.carleton.edu/cs_comps/1213/pylearn/final_results/encyclopedia/
+        
+"""
+import json
+
+class NotValidError(Exception):
+    """This data is not valid"""
+    pass
+class NotWellFormedError(Exception):
+    """This data is not well formed"""
+    pass
+
+def build_validator(schema_string):
+    example = json.loads(schema_string)
+    return Validator(example)
+    
+class Validator(object):
+    def __init__(self, object):
+        self.initType = None
+        self.initQuality = None
+        self.array_compare = None
+        self.contains_elements = False
+        self.dic = object
+        self.dump = None
+        self.unload = None
+        self.key = None
+        
+        self.setInit(self.dic)
+        
+        """for iterator in self.dic:
+            if(iterator=="type"):
+                self.initType = object["type"]
+            if(iterator=="qualities"):
+                for qualities_iterator in object["qualities"]:
+                    self.initQuality.append(qualities_iterator)
+            if(iterator=="element"):
+                self.contains_elements = True
+                self.setInit(self.dic["element"])
+            if(iterator=="element"):
+                self.contains_elements = True
+                self.key = object["element"]
+                for elements_iterator in self.key:
+                    self.array_elements_type = self.key["type"]
+                    if (elements_iterator=="qualities"):
+                        for elements_iterator_qualities in self.key["qualities"]:
+                            self.array_elements_qualities.append(elements_iterator_qualities)"""
+    def setInit(self, list):
+        for iterator in list:
+            if(iterator=="type"):
+                self.initType = iterator
+            if(iterator=="qualities"):
+                self.initQuality= iterator
+                
+    def check_ascending(self,list):
+        for counter in range(0, len(list)-1):
+            if(list[counter]>list[counter+1]):
+                raise NotValidError
+                
+    def check_unique(self,list):
+        self.array_compare = list
+        self.count = 0
+        for iterator in list:
+            for compare in list:
+                if(iterator == compare):
+                    self.count += 1
+            if(self.count >= 2):
+                raise NotValidError
+            else:
+                self.count = 0
+                
+    def check_unique_total(self,list):
+        for iterator in list:
+            self.array_unique_total.append(iterator)
+        self.count = 0
+        for iterator in list:
+            for compare in list:
+                if(iterator == compare):
+                    self.count += 1
+            if(self.count >= 2):
+                raise NotValidError
+            else:
+                self.count = 0
+                
+    def check_unique_reset(self):
+        for iterator in self.array_unique_total:
+            print(iterator)
+        self.array_unique_total = []
+        
+    def check_nonempty(self,list):
+        if(len(list) == 0):
+            raise NotValidError
+            
+    def check_spartan(self,list):
+        for spartan_iterator in list:
+            if(spartan_iterator != "green" and spartan_iterator != "white"):
+                raise NotValidError
+                
+    def check_qualities(self,list):
+        for qualities_iterator in list:
+            if(qualities_iterator=="ascending"):
+                if(len(self.unload)>=2):
+                    self.check_ascending(self.unload)
+            if(qualities_iterator=="unique"):
+                self.check_unique(self.unload)
+            if(qualities_iterator=="nonempty"):
+                self.check_nonempty(self.unload)
+            if(qualities_iterator=="spartan"):
+                self.check_spartan(self.unload)
+                
+    def validate(self, object):
+        try:
+            self.unload = json.loads(object)
+        except ValueError as error:
+            raise NotWellFormedError
+        for iterator in self.dic:
+            if(iterator=="integer"):
+                if(isinstance(self.unload, int) == False):
+                    raise NotValidError
+            if(iterator=="array"):
+                self.check_qualities()
+            if(iterator=="element"):
+                self.dump = json.dumps(self.unload["element"])
+                validate(self.dump)
+        
+        
+        
+        
+        
+        
+    """def validate(self, object):
+        try:
+            self.unload = json.loads(object)
+        except ValueError as error:
+            raise NotWellFormedError
+        if(self.initType=="integer"):
+            if(isinstance(self.unload, int) == False):
+                raise NotValidError
+        if(self.initType=="array"):
+            self.check_qualities()
+        if(self.contains_elements==True):
+            if(self.array_elements_type=="boolean"):
+                for boolean_iterator in self.unload:
+                    if(isinstance(boolean_iterator, bool)==False):
+                        raise NotValidError
+            if(self.array_elements_type=="string"):
+                for string_iterator in self.unload:
+                    if(isinstance(string_iterator,str)==False):
+                        raise NotValidError
+            if(self.array_elements_type=="array"):
+                for qualities_iterator in self.initQuality:
+                    if(qualities_iterator=="ascending"):
+                        for array_iterator_outer in self.unload:
+                            for array_iterator_inner in array_iterator_outer:
+                                if(len(array_iterator_outer)>=2):
+                                    self.check_ascending(array_iterator_outer)
+                    if(qualities_iterator=="spartan"):
+                        for array_iterator_outer in self.unload:
+                            for array_iterator_inner in array_iterator_outer:
+                                check_spartan(array_iterator_outer)
+                    if(qualities_iterator=="unique"):
+                        print("pass")
+                        for array_iterator_outer in self.unload:
+                            for array_iterator_inner in array_iterator_outer:
+                                check_unique_total(array_iterator_inner)
+                        self.check_unique_reset()
+            
+        pass"""
