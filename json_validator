@@ -98,11 +98,6 @@ class Validator(object):
     def check_nonempty(self,list):
         if(len(list) == 0):
             raise NotValidError
-            
-    def check_spartan(self,list):
-        for spartan_iterator in list:
-            if(spartan_iterator != "green" and spartan_iterator != "white"):
-                raise NotValidError
                 
     def check_qualities(self,list):
         for qualities_iterator in list:
@@ -113,8 +108,7 @@ class Validator(object):
                 self.check_unique(self.unload)
             if(qualities_iterator=="nonempty"):
                 self.check_nonempty(self.unload)
-            if(qualities_iterator=="spartan"):
-                self.check_spartan(self.unload)
+       
                 
     def validate(self, object):
         try:
